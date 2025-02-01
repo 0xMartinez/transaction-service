@@ -1,0 +1,23 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://example.com/payment"
+            xmlns="http://example.com/payment"
+            elementFormDefault="qualified">
+
+    <xsd:element name="CreatePaymentRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="amount" type="xsd:decimal"/>
+                <xsd:element name="currency" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="CreatePaymentResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="transactionId" type="xsd:long"/>
+                <xsd:element name="status" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
