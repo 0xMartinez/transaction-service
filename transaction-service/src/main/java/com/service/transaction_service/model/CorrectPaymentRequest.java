@@ -3,14 +3,14 @@ package com.service.transaction_service.model;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@Builder
+@Setter
 @Getter
-@XmlRootElement(name = "CorrectPaymentRequest", namespace = "http://example.com/payment")
 public class CorrectPaymentRequest {
 
-    private Long id;
+    private Long transactionId;
     private BigDecimal correctionAmount;
 }

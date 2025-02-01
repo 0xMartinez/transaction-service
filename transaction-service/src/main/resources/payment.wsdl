@@ -18,7 +18,7 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element name="transactionId" type="xsd:long"/>
-                        <xsd:element name="status" type="xsd:string"/>
+                        <xsd:element name="transactionStatus" type="xsd:string"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -34,7 +34,7 @@
             <xsd:element name="CorrectPaymentResponse">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="status" type="xsd:string"/>
+                        <xsd:element name="transactionStatus" type="xsd:string"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>

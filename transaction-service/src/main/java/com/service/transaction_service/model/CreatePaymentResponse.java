@@ -12,6 +12,6 @@ import java.math.BigDecimal;
 @XmlRootElement(name = "CreatePaymentResponse", namespace = "http://example.com/payment")
 public class CreatePaymentResponse {
 
+    private Long transactionId;
     private TransactionStatus transactionStatus;
-    private BigDecimal amount;
 }

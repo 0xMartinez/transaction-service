@@ -26,12 +26,9 @@ public class TransactionController implements TransactionsApi {
     @Override
     public ResponseEntity<Long> createTransaction(@RequestBody final CreateTransactionRequest request) {
         final Long transactionId = transactionService.createTransaction(request);
-        if (transactionId != null) {
-            return ResponseEntity.ok(transactionId);
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok(transactionId);
     }
+
     @Override
     public ResponseEntity<List<TransactionDto>> getTransactions() {
         return ResponseEntity.ok(transactionService.getTransactions());

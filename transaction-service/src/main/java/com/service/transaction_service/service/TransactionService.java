@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +25,8 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TimeUtil timeUtil;
 
+    private final BasicValidator basicValidator;
+
     public TransactionDto getTransaction(final Long transactionId) {
         final Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Transaction with id %d doesn't exist", transactionId)));
@@ -31,8 +34,7 @@ public class TransactionService {
     }
 
     public List<TransactionDto> getTransactions() {
-        final List<Transaction> transaction = transactionRepository.findAll();
-        return transaction.stream()
+        return transactionRepository.findAll().stream()
                 .map(this::mapTransaction)
                 .collect(Collectors.toList());
     }
@@ -47,12 +49,8 @@ public class TransactionService {
 
     public Transaction createTransaction(final BigDecimal amount, final String currency, final TransactionStatus transactionStatus) {
 
-        if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Amount must be greater then 0");
-        }
-        if (currency.length() != 3) {
-            throw new IllegalArgumentException("Currency symbol must be 3 letter string format");
-        }
+        basicValidator.runBasicFieldsValidation(amount, currency, transactionStatus);
+
         final Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setTransactionStatus(transactionStatus);
@@ -76,6 +74,7 @@ public class TransactionService {
         final Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Transaction with id %d doesn't exist", transactionId)));
 
+        basicValidator.runBasicFieldsValidation(amount, currency, transactionStatus);
         if (amount != null) {
             transaction.setAmount(amount);
         }
@@ -98,10 +97,14 @@ public class TransactionService {
 
         transactionDto.setId(transaction.getId());
         transactionDto.setAmount(transaction.getAmount());
-        transactionDto.setTransactionStatus(com.example.demo.model.TransactionStatus.valueOf(transaction.getTransactionStatus().name()));
+        transactionDto.setTransactionStatus(transaction.getTransactionStatus() != null
+                ? com.example.demo.model.TransactionStatus.valueOf(transaction.getTransactionStatus().name())
+                : null);
         transactionDto.setCurrency(transaction.getCurrency());
         transactionDto.setCreatedAt(transaction.getCreatedAt().atOffset(ZoneOffset.UTC));
-        transactionDto.setUpdatedAt(transaction.getUpdatedAt().atOffset(ZoneOffset.UTC));
+        transactionDto.setUpdatedAt(transaction.getUpdatedAt() != null
+                ? transaction.getUpdatedAt().atOffset(ZoneOffset.UTC)
+                : null);
 
         return transactionDto;
     }

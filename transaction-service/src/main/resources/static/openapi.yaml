@@ -52,12 +52,12 @@ paths:
                   amount: 250.75
                   currency: "GBP"
               example2:
-                summary: Example create transaction failover amount request
+                summary: Example create transaction amount request failure
                 value:
                   amount: -100
                   currency: "GBP"
               example3:
-                summary: Example create transaction failover currency request
+                summary: Example create transaction currency request failure
                 value:
                   amount: 100
                   currency: "ZLOTYCH"
@@ -79,7 +79,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/BadRequestErrorResponse'
       summary: Create transaction
       x-content-type: application/json
       x-accepts:
@@ -130,12 +130,18 @@ paths:
                     createdAt: "2025-01-30T12:00:00Z"
                     updatedAt: "2025-01-30T12:30:00Z"
           description: Transaction details
+        "400":
+          description: Argument mismatch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestErrorResponse'
         "404":
           description: Transaction not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/NotFoundErrorResponse'
       summary: Retrieve a transaction
       x-accepts:
         - application/json
@@ -159,19 +165,40 @@ paths:
                 summary: Example update transaction amount
                 value:
                   amount: 300.00
+                  currency: USD
+                  transactionStatus: COMPLETED
               example2:
+                summary: Example update transaction amount
+                value:
+                  amount: 300.00
+              example3:
                 summary: Example update transaction currency
                 value:
                   currency: PLN
-        required: true
+              example4:
+                summary: Example update transaction amount failure
+                value:
+                  amount: -300.00
+              example5:
+                summary: Example update transaction currency failure
+                value:
+                  currency: ZLOTYCH
       responses:
         "204":
           description: Transaction updated successfully
         "400":
           description: Argument mismatch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestErrorResponse'
         "404":
           description: Transaction not found
-      summary: Delete transaction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+      summary: Update transaction
       x-accepts:
         - application/json
 components:
@@ -230,6 +257,38 @@ components:
           format: date-time
           type: string
       type: object
+    BadRequestErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Argument mismatch"
+        error:
+          type: string
+          example: "Bad Request"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-01-31T12:50:05.567"
+    NotFoundErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Not found"
+        error:
+          type: string
+          example: "Not found"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-01-31T12:50:05.567"
     ErrorResponse:
       type: object
       properties:
@@ -238,10 +297,10 @@ components:
           example: 400
         message:
           type: string
-          example: "Validation error"
+          example: "Not found"
         error:
           type: string
-          example: "Bad Request"
+          example: "Not found"
         timestamp:
           type: string
           format: date-time
