@@ -170,7 +170,7 @@ paths:
               example2:
                 summary: Example update transaction amount
                 value:
-                  amount: 300.00
+                  amount: 100.00
               example3:
                 summary: Example update transaction currency
                 value:

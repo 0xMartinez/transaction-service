@@ -5,7 +5,6 @@ import com.example.demo.model.TransactionDto;
 import com.example.demo.model.TransactionStatus;
 import com.example.demo.model.UpdateTransactionRequest;
 import com.service.transaction_service.repository.TransactionRepository;
-import com.service.transaction_service.util.TimeUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,10 +36,10 @@ public class TransactionServiceIntegrationTest {
 
     @Test
     void shouldGetTransaction() {
-        CreateTransactionRequest request = new CreateTransactionRequest(new BigDecimal("200.00"), "EUR");
-        Long transactionId = transactionService.createTransaction(request);
+        final CreateTransactionRequest request = new CreateTransactionRequest(new BigDecimal("200.00"), "EUR");
+        final Long transactionId = transactionService.createTransaction(request);
 
-        TransactionDto retrievedTransaction = transactionService.getTransaction(transactionId);
+        final TransactionDto retrievedTransaction = transactionService.getTransaction(transactionId);
         assertThat(retrievedTransaction).isNotNull();
         assertThat(retrievedTransaction.getAmount()).isEqualTo("200.00");
         assertThat(retrievedTransaction.getCurrency()).isEqualTo("EUR");
@@ -50,11 +49,11 @@ public class TransactionServiceIntegrationTest {
     void shouldUpdateTransaction() {
         final BigDecimal amount = new BigDecimal("500.00");
         final String currency = "GBP";
-        CreateTransactionRequest request = new CreateTransactionRequest(new BigDecimal("100.00"), "USD");
-        Long transactionId = transactionService.createTransaction(request);
+        final CreateTransactionRequest request = new CreateTransactionRequest(new BigDecimal("100.00"), "USD");
+        final Long transactionId = transactionService.createTransaction(request);
 
-        UpdateTransactionRequest updateRequest = new UpdateTransactionRequest(amount, currency, TransactionStatus.COMPLETED);
-        TransactionDto updatedTransaction = transactionService.updateTransaction(transactionId, updateRequest);
+        final UpdateTransactionRequest updateRequest = new UpdateTransactionRequest(amount, currency, TransactionStatus.COMPLETED);
+        final TransactionDto updatedTransaction = transactionService.updateTransaction(transactionId, updateRequest);
 
         assertThat(updatedTransaction.getAmount()).isEqualTo(amount);
         assertThat(updatedTransaction.getCurrency()).isEqualTo(currency);
@@ -62,8 +61,8 @@ public class TransactionServiceIntegrationTest {
 
     @Test
     void shouldDeleteTransaction() {
-        CreateTransactionRequest request = new CreateTransactionRequest(new BigDecimal(100.00), "USD");
-        Long transactionId = transactionService.createTransaction(request);
+        final CreateTransactionRequest request = new CreateTransactionRequest(new BigDecimal(100.00), "USD");
+        final Long transactionId = transactionService.createTransaction(request);
 
         transactionService.deleteTransaction(transactionId);
 

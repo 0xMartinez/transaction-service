@@ -62,7 +62,7 @@ class TransactionServiceTest {
     void shouldReturnTransactionById() {
         when(transactionRepository.findById(1L)).thenReturn(Optional.of(transaction));
 
-        TransactionDto result = transactionService.getTransaction(1L);
+        final TransactionDto result = transactionService.getTransaction(1L);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
@@ -88,7 +88,7 @@ class TransactionServiceTest {
     void shouldReturnAllTransactions() {
         when(transactionRepository.findAll()).thenReturn(List.of(transaction));
 
-        List<TransactionDto> result = transactionService.getTransactions();
+        final List<TransactionDto> result = transactionService.getTransactions();
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getId()).isEqualTo(1L);
@@ -98,8 +98,8 @@ class TransactionServiceTest {
 
     @Test
     void shouldCreateTransaction() {
-        CreateTransactionRequest request = new CreateTransactionRequest(new BigDecimal("200.00"), "EUR");
-        Transaction newTransaction = new Transaction();
+        final CreateTransactionRequest request = new CreateTransactionRequest(new BigDecimal("200.00"), "EUR");
+        final Transaction newTransaction = new Transaction();
         newTransaction.setId(2L);
         newTransaction.setAmount(request.getAmount());
         newTransaction.setCurrency(request.getCurrency());
@@ -125,13 +125,13 @@ class TransactionServiceTest {
 
     @Test
     void shouldUpdateTransaction() {
-        UpdateTransactionRequest request = new UpdateTransactionRequest(new BigDecimal("500.00"), "GBP", com.example.demo.model.TransactionStatus.COMPLETED);
+        final UpdateTransactionRequest request = new UpdateTransactionRequest(new BigDecimal("500.00"), "GBP", com.example.demo.model.TransactionStatus.COMPLETED);
 
         when(transactionRepository.findById(1L)).thenReturn(Optional.of(transaction));
         when(transactionRepository.save(any(Transaction.class))).thenReturn(transaction);
         when(timeUtil.getCurrentZonedDateTime()).thenReturn(ZonedDateTime.now());
 
-        TransactionDto result = transactionService.updateTransaction(1L, request);
+        final TransactionDto result = transactionService.updateTransaction(1L, request);
 
         assertThat(result.getAmount()).isEqualTo(new BigDecimal("500.00"));
         assertThat(result.getTransactionStatus().name()).isEqualTo(TransactionStatus.COMPLETED.name());
@@ -145,7 +145,7 @@ class TransactionServiceTest {
     void shouldThrowExceptionWhenUpdatingNonExistentTransaction() {
         when(transactionRepository.findById(1L)).thenReturn(Optional.empty());
 
-        UpdateTransactionRequest request = new UpdateTransactionRequest(new BigDecimal("500.00"), "GBP", com.example.demo.model.TransactionStatus.COMPLETED);
+        final UpdateTransactionRequest request = new UpdateTransactionRequest(new BigDecimal("500.00"), "GBP", com.example.demo.model.TransactionStatus.COMPLETED);
 
         assertThatThrownBy(() -> transactionService.updateTransaction(1L, request))
                 .isInstanceOf(ResourceNotFoundException.class)

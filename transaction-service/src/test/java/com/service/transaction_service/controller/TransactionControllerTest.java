@@ -35,7 +35,7 @@ class TransactionControllerTest {
 
     @Test
     void shouldCreateTransaction() throws Exception {
-        String requestBody = """
+        final String requestBody = """
         {
             "amount": 150.00,
             "currency": "USD"
