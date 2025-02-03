@@ -54,7 +54,7 @@ public class TransactionMonitorService {
         for (Transaction transaction : pendingTransactions) {
             transaction.setTransactionStatus(TransactionStatus.EXPIRED);
             transaction.setUpdatedAt(timeUtil.getCurrentZonedDateTime().toLocalDateTime());
-            transactionRepository.save(transaction);
+            transactionRepository.saveAndFlush(transaction);
 
             String message = createTransactionMessage(transaction);
             kafkaTemplate.send(EXPIRED_TOPIC, message);

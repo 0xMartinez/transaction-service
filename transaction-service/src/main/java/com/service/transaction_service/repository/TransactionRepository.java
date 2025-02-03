@@ -10,9 +10,6 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    // Znajdź transakcje COMPLETED zmienione po określonym czasie
     List<Transaction> findByTransactionStatusAndUpdatedAtAfter(TransactionStatus status, LocalDateTime time);
-
-    // Znajdź transakcje PENDING utworzone przed określonym czasem
     List<Transaction> findByTransactionStatusAndCreatedAtBefore(TransactionStatus status, LocalDateTime time);
 }

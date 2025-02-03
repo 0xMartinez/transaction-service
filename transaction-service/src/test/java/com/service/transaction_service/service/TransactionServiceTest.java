@@ -107,12 +107,12 @@ class TransactionServiceTest {
         newTransaction.setCreatedAt(now);
 
         when(timeUtil.getCurrentZonedDateTime()).thenReturn(ZonedDateTime.now());
-        when(transactionRepository.save(any())).thenReturn(newTransaction);
+        when(transactionRepository.saveAndFlush(any())).thenReturn(newTransaction);
 
         transactionService.createTransaction(request);
 
         assertThat(transactionRepository.findById(2L)).isNotNull();
-        verify(transactionRepository, times(1)).save(any(Transaction.class));
+        verify(transactionRepository, times(1)).saveAndFlush(any(Transaction.class));
     }
 
     @Test
@@ -129,7 +129,7 @@ class TransactionServiceTest {
         final UpdateTransactionRequest request = new UpdateTransactionRequest(new BigDecimal("500.00"), "GBP", com.example.demo.model.TransactionStatus.COMPLETED);
 
         when(transactionRepository.findById(1L)).thenReturn(Optional.of(transaction));
-        when(transactionRepository.save(any(Transaction.class))).thenReturn(transaction);
+        when(transactionRepository.saveAndFlush(any(Transaction.class))).thenReturn(transaction);
         when(timeUtil.getCurrentZonedDateTime()).thenReturn(ZonedDateTime.now());
 
         final TransactionDto result = transactionService.updateTransaction(1L, request);
@@ -139,7 +139,7 @@ class TransactionServiceTest {
         assertThat(result.getCurrency()).isEqualTo("GBP");
 
         verify(transactionRepository, times(1)).findById(1L);
-        verify(transactionRepository, times(1)).save(any(Transaction.class));
+        verify(transactionRepository, times(1)).saveAndFlush(any(Transaction.class));
     }
 
     @Test
@@ -154,7 +154,7 @@ class TransactionServiceTest {
                 .hasMessageContaining("Transaction with id 1 is expired or doesn't exist");
 
         verify(transactionRepository, times(1)).findById(1L);
-        verify(transactionRepository, never()).save(any(Transaction.class));
+        verify(transactionRepository, never()).saveAndFlush(any(Transaction.class));
     }
 
     @Test
@@ -168,6 +168,6 @@ class TransactionServiceTest {
                 .hasMessageContaining("Transaction with id 1 is expired or doesn't exist");
 
         verify(transactionRepository, times(1)).findById(1L);
-        verify(transactionRepository, never()).save(any(Transaction.class));
+        verify(transactionRepository, never()).saveAndFlush(any(Transaction.class));
     }
 }

@@ -90,7 +90,7 @@ public class TransactionMonitorServiceTest {
         transactionMonitorService.processTransactions();
 
         assertEquals(TransactionStatus.EXPIRED, pendingTransaction.getTransactionStatus());
-        verify(transactionRepository).save(pendingTransaction);
+        verify(transactionRepository).saveAndFlush(pendingTransaction);
 
         verify(kafkaTemplate).send(eq("transakcje-przeterminowane"), kafkaMessageCaptor.capture());
 
@@ -118,7 +118,7 @@ public class TransactionMonitorServiceTest {
 
         transactionMonitorService.processTransactions();
 
-        verify(transactionRepository, never()).save(any());
+        verify(transactionRepository, never()).saveAndFlush(any());
         verify(kafkaTemplate, never()).send(anyString(), anyString());
     }
 

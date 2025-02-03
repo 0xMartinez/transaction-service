@@ -28,26 +28,24 @@ public class PaymentEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "CreatePaymentRequest")
     @ResponsePayload
-    public JAXBElement<CreatePaymentResponse> createPayment(@RequestPayload JAXBElement<CreatePaymentRequest> request) {
-        final Transaction transaction = paymentService.createPayment(request.getValue().getAmount(), request.getValue().getCurrency());
+    public CreatePaymentResponse createPayment(@RequestPayload CreatePaymentRequest request) {
+        final Transaction transaction = paymentService.createPayment(request.getAmount(), request.getCurrency());
         CreatePaymentResponse response = new CreatePaymentResponse();
         response.setTransactionId(transaction.getId());
         response.setTransactionStatus(transaction.getTransactionStatus());
 
-        QName qName = new QName(NAMESPACE_URI, "CreatePaymentResponse");
-        return new JAXBElement<>(qName, CreatePaymentResponse.class, response);
+        return response;
 
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "CorrectPaymentRequest")
     @ResponsePayload
-    public JAXBElement<CorrectPaymentResponse> correctPayment(@RequestPayload JAXBElement<CorrectPaymentRequest> request) {
-        final Transaction transaction = paymentService.correctPayment(request.getValue().getTransactionId(), request.getValue().getCorrectionAmount());
+    public CorrectPaymentResponse correctPayment(@RequestPayload CorrectPaymentRequest request) {
+        final Transaction transaction = paymentService.correctPayment(request.getTransactionId(), request.getCorrectionAmount());
         final CorrectPaymentResponse response = new CorrectPaymentResponse();
         response.setTransactionStatus(transaction.getTransactionStatus());
         response.setCorrectionAmount(transaction.getAmount());
 
-        QName qName = new QName(NAMESPACE_URI, "CorrectPaymentResponse");
-        return new JAXBElement<>(qName, CorrectPaymentResponse.class, response);
+        return response;
     }
 }

@@ -39,6 +39,9 @@ public class TransactionService {
     }
 
     public Long createTransaction(final CreateTransactionRequest request) {
+
+        basicValidator.runBasicFieldsValidationForTransactionCreation(request.getAmount(), request.getCurrency());
+
         return createTransaction(request.getAmount(), request.getCurrency(), null).getId();
     }
 
@@ -55,14 +58,13 @@ public class TransactionService {
         transaction.setTransactionStatus(transactionStatus);
         transaction.setCurrency(currency);
         transaction.setCreatedAt(timeUtil.getCurrentZonedDateTime().toLocalDateTime());
-
-        transactionRepository.save(transaction);
-
-        return transaction;
+        final Transaction savedTransaction = transactionRepository.saveAndFlush(transaction);
+        return savedTransaction;
     }
 
     public TransactionDto updateTransaction(final Long transactionId, final UpdateTransactionRequest request) {
 
+        basicValidator.runUpdateTransactionValidation(request);
         final Transaction transaction = updateTransaction(request.getAmount(), TransactionStatus.valueOf(request.getTransactionStatus().name()), request.getCurrency(), transactionId);
         return mapTransaction(transaction);
     }
@@ -70,7 +72,8 @@ public class TransactionService {
     public Transaction updateTransaction(final BigDecimal amount, final TransactionStatus transactionStatus, final String currency,
                                          final Long transactionId) {
 
-        final Transaction transaction = transactionRepository.findById(transactionId).filter(t -> TransactionStatus.EXPIRED != t.getTransactionStatus())
+        final Transaction transaction = transactionRepository.findById(transactionId)
+                .filter(t -> TransactionStatus.EXPIRED != t.getTransactionStatus())
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Transaction with id %d is expired or doesn't exist", transactionId)));
 
         basicValidator.runBasicFieldsValidation(amount, currency, transactionStatus);
@@ -85,7 +88,7 @@ public class TransactionService {
         }
         transaction.setUpdatedAt(timeUtil.getCurrentZonedDateTime().toLocalDateTime());
 
-        transactionRepository.save(transaction);
+        transactionRepository.saveAndFlush(transaction);
 
         return transaction;
     }
