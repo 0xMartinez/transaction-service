@@ -5,6 +5,7 @@ Rest api zostało wygenerowane przez plik openapi.yaml w katalogu resources/stat
 Swagger z wystawionymi endpointami REST: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 W celu zapewnienia większej stabilności, użyte zostały 2 instancje Kafki.
 W systemie użyto bazę danych H2, operacje dodawania, usuwania, aktualizowanie są logowane.
+Konsola do bazy danych znajduje się pod endpointem [http://localhost:8080/h2-console/login.jsp](http://localhost:8080/h2-console/login.jsp)
 Plik .wsdl znajduje się w katalogu resources.
 
 System udostępnia REST api do edytowania transakcji:
