@@ -26,10 +26,10 @@ public class TransactionMonitorService {
     private static final String COMPLETED_TOPIC = "transakcje-zrealizowane";
     private static final String EXPIRED_TOPIC = "transakcje-przeterminowane";
 
-    @Scheduled(fixedRate = 30000) // Uruchamia się co 30 sekund
+    @Scheduled(fixedRate = 30000)
     @Transactional
     public void processTransactions() {
-        log.info("🚀 Rozpoczęcie przetwarzania transakcji...");
+        log.info("Rozpoczęcie przetwarzania transakcji...");
         handleCompletedTransactions();
         handlePendingTransactions();
     }

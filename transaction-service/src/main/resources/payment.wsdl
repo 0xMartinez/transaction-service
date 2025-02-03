@@ -34,6 +34,7 @@
             <xsd:element name="CorrectPaymentResponse">
                 <xsd:complexType>
                     <xsd:sequence>
+                        <xsd:element name="correctionAmount" type="xsd:decimal"/>
                         <xsd:element name="transactionStatus" type="xsd:string"/>
                     </xsd:sequence>
                 </xsd:complexType>

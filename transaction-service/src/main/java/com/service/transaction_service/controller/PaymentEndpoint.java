@@ -45,8 +45,9 @@ public class PaymentEndpoint {
         final Transaction transaction = paymentService.correctPayment(request.getValue().getTransactionId(), request.getValue().getCorrectionAmount());
         final CorrectPaymentResponse response = new CorrectPaymentResponse();
         response.setTransactionStatus(transaction.getTransactionStatus());
+        response.setCorrectionAmount(transaction.getAmount());
 
-        QName qName = new QName(NAMESPACE_URI, "CreatePaymentResponse");
+        QName qName = new QName(NAMESPACE_URI, "CorrectPaymentResponse");
         return new JAXBElement<>(qName, CorrectPaymentResponse.class, response);
     }
 }

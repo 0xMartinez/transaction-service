@@ -1,12 +1,12 @@
-package com.service.transaction_service.service;
+package com.service.transaction_service.util;
 
 import com.service.transaction_service.repository.model.TransactionStatus;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
-@Service
+@Component
 public class BasicValidator {
 
     public final static String AMOUNT_EQUAL_OR_LOWER_0_VALIDATION_MESSAGE = "Amount must be greater then 0";

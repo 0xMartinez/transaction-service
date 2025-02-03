@@ -6,6 +6,7 @@ import com.example.demo.model.UpdateTransactionRequest;
 import com.service.transaction_service.repository.TransactionRepository;
 import com.service.transaction_service.repository.model.Transaction;
 import com.service.transaction_service.repository.model.TransactionStatus;
+import com.service.transaction_service.util.BasicValidator;
 import com.service.transaction_service.util.TimeUtil;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -143,13 +144,28 @@ class TransactionServiceTest {
 
     @Test
     void shouldThrowExceptionWhenUpdatingNonExistentTransaction() {
-        when(transactionRepository.findById(1L)).thenReturn(Optional.empty());
+        transaction.setTransactionStatus(TransactionStatus.EXPIRED);
+        when(transactionRepository.findById(1L)).thenReturn(Optional.of(transaction));
 
         final UpdateTransactionRequest request = new UpdateTransactionRequest(new BigDecimal("500.00"), "GBP", com.example.demo.model.TransactionStatus.COMPLETED);
 
         assertThatThrownBy(() -> transactionService.updateTransaction(1L, request))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Transaction with id 1 doesn't exist");
+                .hasMessageContaining("Transaction with id 1 is expired or doesn't exist");
+
+        verify(transactionRepository, times(1)).findById(1L);
+        verify(transactionRepository, never()).save(any(Transaction.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingExpiredTransaction() {
+        when(transactionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        final UpdateTransactionRequest request = new UpdateTransactionRequest(new BigDecimal("500.00"), "GBP", com.example.demo.model.TransactionStatus.EXPIRED);
+
+        assertThatThrownBy(() -> transactionService.updateTransaction(1L, request))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Transaction with id 1 is expired or doesn't exist");
 
         verify(transactionRepository, times(1)).findById(1L);
         verify(transactionRepository, never()).save(any(Transaction.class));

@@ -208,9 +208,9 @@ components:
       enum:
         - PENDING
         - COMPLETED
-        - FAILED
+        - EXPIRED
     amount:
-      format: BigDecimal
+      format: string
       type: number
       minimum: 0.01
       description: "Amount must be greater than 0 and cannot be null"

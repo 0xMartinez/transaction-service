@@ -13,5 +13,6 @@ import java.math.BigDecimal;
 public class CorrectPaymentResponse {
 
     private TransactionStatus transactionStatus;
+    private BigDecimal correctionAmount;
 
 }

@@ -6,16 +6,15 @@ import com.example.demo.model.UpdateTransactionRequest;
 import com.service.transaction_service.repository.TransactionRepository;
 import com.service.transaction_service.repository.model.Transaction;
 import com.service.transaction_service.repository.model.TransactionStatus;
+import com.service.transaction_service.util.BasicValidator;
 import com.service.transaction_service.util.TimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,8 +70,8 @@ public class TransactionService {
     public Transaction updateTransaction(final BigDecimal amount, final TransactionStatus transactionStatus, final String currency,
                                          final Long transactionId) {
 
-        final Transaction transaction = transactionRepository.findById(transactionId)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Transaction with id %d doesn't exist", transactionId)));
+        final Transaction transaction = transactionRepository.findById(transactionId).filter(t -> TransactionStatus.EXPIRED != t.getTransactionStatus())
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Transaction with id %d is expired or doesn't exist", transactionId)));
 
         basicValidator.runBasicFieldsValidation(amount, currency, transactionStatus);
         if (amount != null) {
