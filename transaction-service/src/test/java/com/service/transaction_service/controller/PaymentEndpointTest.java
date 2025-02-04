@@ -39,7 +39,6 @@ class PaymentEndpointTest {
 
     private MockWebServiceClient mockClient;
 
-
     @BeforeEach
     void setUp() {
         mockClient = MockWebServiceClient.createClient(applicationContext);

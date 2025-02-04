@@ -117,7 +117,8 @@ class TransactionServiceTest {
 
     @Test
     void shouldDeleteTransaction() {
-        doNothing().when(transactionRepository).deleteById(1L);
+
+        when(transactionRepository.findById(1L)).thenReturn(Optional.of(transaction));
 
         transactionService.deleteTransaction(1L);
 

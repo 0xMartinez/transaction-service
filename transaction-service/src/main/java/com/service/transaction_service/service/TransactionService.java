@@ -46,6 +46,9 @@ public class TransactionService {
     }
 
     public void deleteTransaction(final Long transactionId) {
+
+        transactionRepository.findById(transactionId).orElseThrow(() -> new ResourceNotFoundException(String.format("Transaction with id %d doesn't exist", transactionId)));
+
         transactionRepository.deleteById(transactionId);
     }
 
@@ -65,7 +68,10 @@ public class TransactionService {
     public TransactionDto updateTransaction(final Long transactionId, final UpdateTransactionRequest request) {
 
         basicValidator.runUpdateTransactionValidation(request);
-        final Transaction transaction = updateTransaction(request.getAmount(), TransactionStatus.valueOf(request.getTransactionStatus().name()), request.getCurrency(), transactionId);
+        final Transaction transaction =
+                updateTransaction(request.getAmount(), request.getTransactionStatus() != null
+                        ? TransactionStatus.valueOf(request.getTransactionStatus().name()) : null,
+                        request.getCurrency(), transactionId);
         return mapTransaction(transaction);
     }
 

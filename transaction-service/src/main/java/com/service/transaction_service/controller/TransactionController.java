@@ -42,12 +42,12 @@ public class TransactionController implements TransactionsApi {
     @Override
     public ResponseEntity<Void> updateTransaction(@PathVariable("id") final Long id, @RequestBody final UpdateTransactionRequest request) {
         ResponseEntity.ok(transactionService.updateTransaction(id, request));
-        return null;
+        return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<Void> deleteTransaction(@PathVariable("id") final Long id) {
         transactionService.deleteTransaction(id);
-        return null;
+        return ResponseEntity.noContent().build();
     }
 }
