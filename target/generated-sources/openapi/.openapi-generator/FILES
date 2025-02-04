@@ -1,0 +1,12 @@
+.openapi-generator-ignore
+README.md
+pom.xml
+src/main/java/com/transaction/api/ApiUtil.java
+src/main/java/com/transaction/api/TransactionsApi.java
+src/main/java/com/transaction/model/BadRequestErrorResponse.java
+src/main/java/com/transaction/model/CreateTransactionRequest.java
+src/main/java/com/transaction/model/ErrorResponse.java
+src/main/java/com/transaction/model/NotFoundErrorResponse.java
+src/main/java/com/transaction/model/TransactionDto.java
+src/main/java/com/transaction/model/TransactionStatus.java
+src/main/java/com/transaction/model/UpdateTransactionRequest.java

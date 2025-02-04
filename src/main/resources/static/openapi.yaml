@@ -1,0 +1,307 @@
+openapi: 3.0.0
+info:
+  description: API for managing transactions
+  title: Transaction API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /transactions:
+    get:
+      description: Retrieves a list of all transactions.
+      operationId: getTransactions
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionDto'
+              examples:
+                default:
+                  summary: Example transaction list
+                  value:
+                    - id: 1
+                      amount: 100.50
+                      currency: "USD"
+                      transactionStatus: "COMPLETED"
+                      createdAt: "2025-01-30T12:00:00Z"
+                      updatedAt: "2025-01-30T12:30:00Z"
+                    - id: 2
+                      amount: 200.00
+                      currency: "PLN"
+                      transactionStatus: ""
+                      createdAt: "2025-01-30T12:00:00Z"
+          description: List of transactions
+      summary: Retrieve all transactions
+      x-accepts:
+        - application/json
+    post:
+      description: Creates a new transaction.
+      operationId: createTransaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransactionRequest'
+            examples:
+              example1:
+                summary: Example create transaction request
+                value:
+                  amount: 250.75
+                  currency: "GBP"
+              example2:
+                summary: Example create transaction amount request failure
+                value:
+                  amount: -100
+                  currency: "GBP"
+              example3:
+                summary: Example create transaction currency request failure
+                value:
+                  amount: 100
+                  currency: "ZLOTYCH"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                format: int64
+                type: integer
+              examples:
+                default:
+                  summary: Transaction created successfully
+                  value: 3
+          description: Transaction created successfully
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestErrorResponse'
+      summary: Create transaction
+      x-content-type: application/json
+      x-accepts:
+        - application/json
+  /transactions/{id}:
+    delete:
+      description: Deletes a transaction with the specified ID.
+      operationId: deleteTransaction
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            type: integer
+      responses:
+        "204":
+          description: Transaction deleted successfully
+        "404":
+          description: Transaction not found
+      summary: Delete transaction
+      x-accepts:
+        - application/json
+    get:
+      description: Retrieves a transaction with specified ID.
+      operationId: getTransaction
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionDto'
+              examples:
+                default:
+                  summary: Example transaction details
+                  value:
+                    id: 1
+                    amount: 100.50
+                    currency: "USD"
+                    transactionStatus: "COMPLETED"
+                    createdAt: "2025-01-30T12:00:00Z"
+                    updatedAt: "2025-01-30T12:30:00Z"
+          description: Transaction details
+        "400":
+          description: Argument mismatch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestErrorResponse'
+        "404":
+          description: Transaction not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+      summary: Retrieve a transaction
+      x-accepts:
+        - application/json
+    put:
+      description: Updates an existing transaction.
+      operationId: updateTransaction
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTransactionRequest'
+            examples:
+              example1:
+                summary: Example update transaction amount
+                value:
+                  amount: 300.00
+                  currency: USD
+                  transactionStatus: COMPLETED
+              example2:
+                summary: Example update transaction amount
+                value:
+                  amount: 100.00
+              example3:
+                summary: Example update transaction currency
+                value:
+                  currency: PLN
+              example4:
+                summary: Example update transaction amount failure
+                value:
+                  amount: -300.00
+              example5:
+                summary: Example update transaction currency failure
+                value:
+                  currency: ZLOTYCH
+      responses:
+        "204":
+          description: Transaction updated successfully
+        "400":
+          description: Argument mismatch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestErrorResponse'
+        "404":
+          description: Transaction not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+      summary: Update transaction
+      x-accepts:
+        - application/json
+components:
+  schemas:
+    TransactionStatus:
+      type: string
+      enum:
+        - PENDING
+        - COMPLETED
+        - EXPIRED
+    amount:
+      format: string
+      type: number
+      minimum: 0.01
+      description: "Amount must be greater than 0 and cannot be null"
+    currency:
+      type: string
+      minLength: 3
+      maxLength: 3
+      description: "Currency must be exactly 3 characters long"
+    CreateTransactionRequest:
+      properties:
+        amount:
+          $ref: '#/components/schemas/amount'
+        currency:
+          $ref: '#/components/schemas/currency'
+      required:
+        - amount
+        - currency
+      type: object
+    UpdateTransactionRequest:
+      properties:
+        amount:
+          $ref: '#/components/schemas/amount'
+        currency:
+          $ref: '#/components/schemas/currency'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+      type: object
+    TransactionDto:
+      properties:
+        id:
+          format: int64
+          type: integer
+        amount:
+          format: BigDecimal
+          type: number
+        currency:
+          type: string
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      type: object
+    BadRequestErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Argument mismatch"
+        error:
+          type: string
+          example: "Bad Request"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-01-31T12:50:05.567"
+    NotFoundErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Not found"
+        error:
+          type: string
+          example: "Not found"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-01-31T12:50:05.567"
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Not found"
+        error:
+          type: string
+          example: "Not found"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-01-31T12:50:05.567"
