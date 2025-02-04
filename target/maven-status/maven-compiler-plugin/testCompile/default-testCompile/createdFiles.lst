@@ -1,8 +1,0 @@
-com/service/transaction_service/service/TransactionServiceIntegrationTest.class
-com/service/transaction_service/controller/TransactionControllerTest.class
-com/service/transaction_service/controller/PaymentEndpointTest.class
-com/service/transaction_service/service/PaymentServiceTest.class
-com/service/transaction_service/service/TransactionServiceTest.class
-com/service/transaction_service/validator/BasicValidatorTest.class
-com/service/transaction_service/TransactionServiceApplicationTests.class
-com/service/transaction_service/service/TransactionMonitorServiceTest.class
