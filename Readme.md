@@ -1,11 +1,14 @@
 # System do obsługi transakcji płatniczych w Spring Boot
 
-Aplikacja wykorzystuje dockera do konteneryzacji aplikacji, Apache kafkę do publikowania i zarządzania tematami.
+Aplikacja pozwala na tworzenie płatności przez SOAP api oraz na zarządzanie transakcjami za pomocą REST api.
 Rest api zostało wygenerowane przez plik openapi.yaml w katalogu resources/static
 Swagger z wystawionymi endpointami REST: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+Aplikacja wykorzystuje dockera do konteneryzacji aplikacji w celu łatwego uruchomienia go na dowolnym środowisku.
+Do publikacji z zewnętrznymi systemami użyto Apache Kafka w celu publikowania informacji na temat transakcji zrealizowanych i niezrealizowanych.
 W celu zapewnienia większej stabilności, użyte zostały 2 instancje Kafki.
 W systemie użyto bazę danych H2, operacje dodawania, usuwania, aktualizowanie są logowane.
 Konsola do bazy danych znajduje się pod endpointem [http://localhost:8080/h2-console/login.jsp](http://localhost:8080/h2-console/login.jsp)
+Dla spójności przyjęto, że format 
 Plik .wsdl znajduje się w katalogu resources.
 
 System udostępnia REST api do edytowania transakcji:
