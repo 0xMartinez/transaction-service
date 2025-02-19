@@ -3,7 +3,7 @@ spring:
     topics:
       completed: ${COMPLETED_TOPIC:transakcje-zrealizowane}
       expired: ${EXPIRED_TOPIC:transakcje-przeterminowane}
-    bootstrap-servers: ${BOOTSTRAP_SERVERS:kafka1:9092,kafka2:9093}
+    bootstrap-servers: ${BOOTSTRAP_SERVERS:kafka1:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
