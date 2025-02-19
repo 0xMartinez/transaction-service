@@ -1,14 +1,15 @@
 spring:
   kafka:
-    bootstrap-servers: kafka1:9092, kafka2:9093
+    topics:
+      completed: ${COMPLETED_TOPIC:transakcje-zrealizowane}
+      expired: ${EXPIRED_TOPIC:transakcje-przeterminowane}
+    bootstrap-servers: ${BOOTSTRAP_SERVERS:kafka1:9092,kafka2:9093}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
   datasource:
-    url: jdbc:h2:~/test
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:~/test}
     driver-class-name: org.h2.Driver
-    username: sa
-    password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -26,3 +27,8 @@ logging:
 springdoc:
   swagger-ui:
     url: /openapi.yaml
+resources:
+  cache:
+    cachecontrol:
+      no-store: true
+    period: 0

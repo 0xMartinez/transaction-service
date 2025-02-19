@@ -1,5 +1,6 @@
 package com.service.transaction_service.service;
 
+import com.service.transaction_service.config.KafkaConfig;
 import com.service.transaction_service.repository.TransactionRepository;
 import com.service.transaction_service.repository.model.Transaction;
 import com.service.transaction_service.repository.model.TransactionStatus;
@@ -22,9 +23,7 @@ public class TransactionMonitorService {
     private final TransactionRepository transactionRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final TimeUtil timeUtil;
-
-    private static final String COMPLETED_TOPIC = "transakcje-zrealizowane";
-    private static final String EXPIRED_TOPIC = "transakcje-przeterminowane";
+    private final KafkaConfig kafkaConfig;
 
     @Scheduled(fixedRate = 30000)
     @Transactional
@@ -41,8 +40,8 @@ public class TransactionMonitorService {
 
         for (Transaction transaction : completedTransactions) {
             String message = createTransactionMessage(transaction);
-            kafkaTemplate.send(COMPLETED_TOPIC, message);
-            log.info("Wysłano do Kafka ({}): {}", COMPLETED_TOPIC, message);
+            kafkaTemplate.send(kafkaConfig.completedTransactionsTopic().name(), message);
+            log.info("Wysłano do Kafka ({}): {}", kafkaConfig.completedTransactionsTopic().name(), message);
         }
     }
 
@@ -57,8 +56,8 @@ public class TransactionMonitorService {
             transactionRepository.saveAndFlush(transaction);
 
             String message = createTransactionMessage(transaction);
-            kafkaTemplate.send(EXPIRED_TOPIC, message);
-            log.info("Wysłano do Kafka ({}): {}", EXPIRED_TOPIC, message);
+            kafkaTemplate.send(kafkaConfig.expiredTransactionsTopic().name(), message);
+            log.info("Wysłano do Kafka ({}): {}", kafkaConfig.expiredTransactionsTopic().name(), message);
         }
     }
 

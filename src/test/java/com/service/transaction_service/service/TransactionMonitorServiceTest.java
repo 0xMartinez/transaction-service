@@ -1,9 +1,11 @@
 package com.service.transaction_service.service;
 
+import com.service.transaction_service.config.KafkaConfig;
 import com.service.transaction_service.repository.TransactionRepository;
 import com.service.transaction_service.repository.model.Transaction;
 import com.service.transaction_service.repository.model.TransactionStatus;
 import com.service.transaction_service.util.TimeUtil;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +36,9 @@ public class TransactionMonitorServiceTest {
 
     @Mock
     private TimeUtil timeUtil;
+
+    @Mock
+    private KafkaConfig kafkaConfig;
 
     @InjectMocks
     private TransactionMonitorService transactionMonitorService;
@@ -69,6 +74,7 @@ public class TransactionMonitorServiceTest {
         when(transactionRepository.findByTransactionStatusAndUpdatedAtAfter(eq(TransactionStatus.COMPLETED), any()))
                 .thenReturn(List.of(completedTransaction));
 
+        when(kafkaConfig.completedTransactionsTopic()).thenReturn(new NewTopic("transakcje-zrealizowane", 1, (short) 1));
         transactionMonitorService.processTransactions();
 
         verify(kafkaTemplate).send(eq("transakcje-zrealizowane"), kafkaMessageCaptor.capture());
@@ -84,6 +90,7 @@ public class TransactionMonitorServiceTest {
     void shouldProcessPendingTransactionsAndMarkAsExpired() {
         when(transactionRepository.findByTransactionStatusAndCreatedAtBefore(eq(TransactionStatus.PENDING), any()))
                 .thenReturn(List.of(pendingTransaction));
+        when(kafkaConfig.expiredTransactionsTopic()).thenReturn(new NewTopic("transakcje-przeterminowane", 1, (short) 1));
 
         when(timeUtil.getCurrentZonedDateTime()).thenReturn(java.time.ZonedDateTime.now());
 
